@@ -129,8 +129,8 @@ public class PlayerDao {
 
         } catch (SQLException e) {
             System.err.println("Error retrieving player: " + e.getMessage());
-        }
 
+        }
         return player;
     }
 }
