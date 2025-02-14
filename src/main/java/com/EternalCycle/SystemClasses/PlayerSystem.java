@@ -32,7 +32,17 @@ public class PlayerSystem {
     }
 
     public void DeletePlayer(int playerId) {
-        playerDao.deletePlayer(playerId);
+        playerDao.DeletePlayer(playerId);
         System.out.println("Player deleted successfully!");
+    }
+
+    // Check if a username is already taken
+    public boolean IsUsernameTaken(String username) {
+        return playerDao.GetPlayerByUsername(username) != null;
+    }
+
+    // Retrieve a player by username and password hash
+    public Player GetPlayerByUsernameAndPassword(String username, String passwordHash) {
+        return playerDao.GetPlayerByUsernameAndPassword(username, passwordHash);
     }
 }

@@ -45,8 +45,6 @@ public class PlayerDao {
             statement.setString(4, player.getInventory()); // Store as string
             statement.executeUpdate();
 
-            System.out.println("Player successfully created!");
-
         } catch (SQLException e) {
             System.err.println("Player not available: " + e.getMessage());
         }
@@ -65,14 +63,12 @@ public class PlayerDao {
             statement.setInt(5, player.getPlayerId());
             statement.executeUpdate();
 
-            System.out.println("Player updated successfully!");
-
         } catch (SQLException e) {
             System.err.println("Error updating player: " + e.getMessage());
         }
     }
 
-    public void deletePlayer(int playerId) {
+    public void DeletePlayer(int playerId) {
         String sql = "DELETE FROM Players WHERE player_id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
@@ -81,10 +77,60 @@ public class PlayerDao {
             statement.setInt(1, playerId);
             statement.executeUpdate();
 
-            System.out.println("Player deleted successfully!");
-
         } catch (SQLException e) {
             System.err.println("Error deleting player: " + e.getMessage());
         }
+    }
+
+    public Player GetPlayerByUsername(String username) {
+        String sql = "SELECT * FROM Players WHERE username = ?";
+        Player player = null;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                player = new Player();
+                player.setPlayerId(resultSet.getInt("player_id"));
+                player.setUsername(resultSet.getString("username"));
+                player.setPasswordHash(resultSet.getString("password_hash"));
+                player.setProgress(resultSet.getString("progress"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error retrieving player: " + e.getMessage());
+        }
+
+        return player;
+    }
+
+    // Retrieve a player by username and password hash
+    public Player GetPlayerByUsernameAndPassword(String username, String passwordHash) {
+        String sql = "SELECT * FROM Players WHERE username = ? AND password_hash = ?";
+        Player player = null;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, username);
+            statement.setString(2, passwordHash);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                player = new Player();
+                player.setPlayerId(resultSet.getInt("player_id"));
+                player.setUsername(resultSet.getString("username"));
+                player.setPasswordHash(resultSet.getString("password_hash"));
+                player.setProgress(resultSet.getString("progress"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error retrieving player: " + e.getMessage());
+        }
+
+        return player;
     }
 }
