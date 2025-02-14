@@ -1,4 +1,4 @@
-package org.main;
+package com.EternalCycle.Database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
