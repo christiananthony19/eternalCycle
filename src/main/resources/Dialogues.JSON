@@ -1,0 +1,18 @@
+{
+  "dialogues": [
+    {
+      "id": 1,
+      "speaker": "Narrator",
+      "text": "Welcome, Heir, to the Eternal Sanctuary.\n\nThe land is scarred, but it is not beyond repair.\n\nThe heroes who gather here are not mere warriors—they are beacons of hope.\n\nAnd you, my child, are their guiding light.",
+      "next_id": 2,
+      "event_trigger": "start_game"
+    },
+    {
+      "id": 2,
+      "speaker": "Narrator",
+      "text": "But the darkness does not sleep.\n\nBeneath the earth, in the forgotten depths, it stirs.\n\nThe first expedition awaits.\n\nWill your heroes emerge victorious, or will they fall and rise again, tempered by the loop?",
+      "next_id": null,
+      "event_trigger": "start_act_1"
+    }
+  ]
+}

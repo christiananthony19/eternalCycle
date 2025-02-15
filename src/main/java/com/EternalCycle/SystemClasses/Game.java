@@ -1,72 +1,86 @@
 package com.EternalCycle.SystemClasses;
 
 import com.EternalCycle.TableClasses.Player;
-
 import java.util.Scanner;
 
 public class Game {
 
     private final Player PLAYER;
     private final Scanner SCANNER;
+    private final DialogueSystem DIALOGUE_SYSTEM;
 
-    public Game(LoginAndRegisterSystem loginSystem) {
+    // Constructor to accept LoginAndRegisterSystem and DialogueSystem
+    public Game(LoginAndRegisterSystem loginSystem, DialogueSystem dialogueSystem) {
         this.PLAYER = loginSystem.getLoggedInPlayer();
         this.SCANNER = new Scanner(System.in);
+        this.DIALOGUE_SYSTEM = dialogueSystem;
     }
 
     // Method to start the game
     public void start() {
         System.out.println("\nStarting the game...");
         System.out.println("--------------------");
+
+        // Display the first gameplay dialogue (e.g., dialogue ID 12)
+        DIALOGUE_SYSTEM.displayDialogue(DIALOGUE_SYSTEM.getDialogueById(12), 50);
         System.exit(0);
-        // Simulate a simple text-based game loop
+
+        // Example: Player interaction loop
 //        while (true) {
 //            System.out.println("\nWhat would you like to do?");
-//            System.out.println("1. Explore");
-//            System.out.println("2. Check Inventory");
-//            System.out.println("3. Save and Quit");
+//            System.out.println("1. Explore the Hamlet");
+//            System.out.println("2. Visit the Barracks");
+//            System.out.println("3. Check Inventory");
+//            System.out.println("4. Quit Game");
 //
 //            int choice = SCANNER.nextInt();
-//            SCANNER.nextLine(); // Consume the newline character
+//            SCANNER.nextLine(); // Consume newline
 //
 //            switch (choice) {
 //                case 1:
-//                    explore();
+//                    exploreHamlet();
 //                    break;
 //                case 2:
-//                    checkInventory();
+//                    visitBarracks();
 //                    break;
 //                case 3:
-//                    saveAndQuit();
-//                    return;
+//                    checkInventory();
+//                    break;
+//                case 4:
+//                    System.out.println("Exiting the game...");
+//                    scannerClose();
+//                    System.exit(0);
 //                default:
 //                    System.out.println("Invalid choice. Please try again.");
 //            }
 //        }
-    }
+//    }
+//
+//    // Example method: Explore the Hamlet
+//    private void exploreHamlet() {
+//        System.out.println("\nYou explore the Hamlet...");
+//        // Display a dynamic dialogue (e.g., fetched from the database)
+//        DIALOGUE_SYSTEM.displayDialogue(DIALOGUE_SYSTEM.getDialogueById(13), 50);
+//    }
+//
+//    // Example method: Visit the Barracks
+//    private void visitBarracks() {
+//        System.out.println("\nYou visit the Barracks...");
+//        // Display a dynamic dialogue (e.g., fetched from the database)
+//        DIALOGUE_SYSTEM.displayDialogue(DIALOGUE_SYSTEM.getDialogueById(14), 50);
+//    }
+//
+//    // Example method: Check Inventory
+//    private void checkInventory() {
+//        System.out.println("\nYou check your inventory...");
+//        // Display a dynamic dialogue (e.g., fetched from the database)
+//        DIALOGUE_SYSTEM.displayDialogue(DIALOGUE_SYSTEM.getDialogueById(15), 50);
+//    }
 
-    private void explore() {
-        System.out.println("\nYou venture into the unknown...");
-        // Add game logic for exploration here
-        System.out.println("You find a mysterious object!");
-    }
+        // Close all resources (e.g., Scanner)
 
-    private void checkInventory() {
-        System.out.println("\nYour Inventory:");
-        // Add logic to display the player's inventory here
-        System.out.println("Inventory is empty for now.");
     }
-
-    private void saveAndQuit() {
-        System.out.println("\nSaving your progress...");
-        // Update the player's progress in the database
-        PLAYER.setProgress("{\"progress\": \"saved\"}");
-        System.out.println("Progress saved. See you next time!");
-        scannerClose();
-    }
-
-    // Close all resources (e.g., Scanner)
-    public void scannerClose() {
+    public void scannerClose () {
         SCANNER.close();
     }
 }

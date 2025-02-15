@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class Dialogue {
     private int dialogueId;
     private String speaker;
     private String text;
-    private Integer choiceId; // Can be null
+    private List<Choice> choices; // Links to choices (if any)
     private Integer nextDialogueId; // Can be null
     private String eventTrigger;
 }

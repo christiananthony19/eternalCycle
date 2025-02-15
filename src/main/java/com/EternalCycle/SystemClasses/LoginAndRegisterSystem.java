@@ -18,6 +18,7 @@ public class LoginAndRegisterSystem {
     private boolean isValidPassword(String password) {
         return password.length() >= 6;
     }
+    // this contains username and password. Gonna need to refactor this to remove the password
     private Player loggedInPlayer;
     private String registerUsername;
     private String registerPassword;
@@ -34,25 +35,27 @@ public class LoginAndRegisterSystem {
             System.out.println("3. Exit");
             System.out.print("\nChoice:");
 
-            int choice = SCANNER.nextInt();
-            SCANNER.nextLine(); // Consume the newline character
+            try {
+                int choice = SCANNER.nextInt();
+                SCANNER.nextLine(); // Consume the newline character
 
-            switch (choice) {
-                case 1:
+                if (choice == 1) {
                     if (login()) {
                         return; // Login successful
                     }
-                    break;
-                case 2:
+                } else if (choice == 2) {
                     if (register()) {
                         return; // Registration successful
                     }
-                    break;
-                case 3:
+                } else if (choice == 3) {
                     System.out.println("Thank you for playing Eternal Cycle. Goodbye!");
                     System.exit(0);
-                default:
+                } else {
                     System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (Exception ex) {
+                System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
+                SCANNER.nextLine(); // Clear the invalid input
             }
         }
     }

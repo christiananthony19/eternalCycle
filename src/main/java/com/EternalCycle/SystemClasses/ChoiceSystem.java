@@ -8,6 +8,6 @@ public class ChoiceSystem {
     private final ChoiceDao choiceDao = new ChoiceDao();
 
     public Choice getChoiceById(int choiceId) {
-        return choiceDao.GetChoiceById(choiceId);
+        return choiceDao.getChoiceById(choiceId);
     }
 }
