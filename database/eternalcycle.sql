@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2025 at 11:59 PM
+-- Generation Time: Feb 15, 2025 at 08:29 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,7 +31,9 @@ CREATE TABLE `choices` (
   `choice_id` int(11) NOT NULL,
   `description` text NOT NULL,
   `consequence` text NOT NULL,
-  `linked_location_id` int(11) DEFAULT NULL
+  `linked_location_id` int(11) DEFAULT NULL,
+  `dialogue_id` int(11) DEFAULT NULL,
+  `next_dialogue_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -44,7 +46,6 @@ CREATE TABLE `dialogue` (
   `dialogue_id` int(11) NOT NULL,
   `speaker` varchar(100) NOT NULL,
   `text` text NOT NULL,
-  `choice_id` int(11) DEFAULT NULL,
   `next_dialogue_id` int(11) DEFAULT NULL,
   `event_trigger` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -60,29 +61,6 @@ CREATE TABLE `events` (
   `name` varchar(100) NOT NULL,
   `trigger_condition` text NOT NULL,
   `outcome` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `inventory`
---
-
-CREATE TABLE `inventory` (
-  `inventory_id` int(11) NOT NULL,
-  `player_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `inventory_items`
---
-
-CREATE TABLE `inventory_items` (
-  `inventory_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `quantity` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -151,8 +129,16 @@ CREATE TABLE `players` (
   `player_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `progress` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`progress`))
+  `progress` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`progress`)),
+  `inventory` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`inventory`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `players`
+--
+
+INSERT INTO `players` (`player_id`, `username`, `password_hash`, `progress`, `inventory`) VALUES
+(1, 'UserTest', '1216985755', '{}', NULL);
 
 -- --------------------------------------------------------
 
@@ -206,14 +192,15 @@ CREATE TABLE `timeloop` (
 --
 ALTER TABLE `choices`
   ADD PRIMARY KEY (`choice_id`),
-  ADD KEY `linked_location_id` (`linked_location_id`);
+  ADD KEY `linked_location_id` (`linked_location_id`),
+  ADD KEY `fk_dialogue_id` (`dialogue_id`),
+  ADD KEY `fk_next_dialogue_id` (`next_dialogue_id`);
 
 --
 -- Indexes for table `dialogue`
 --
 ALTER TABLE `dialogue`
   ADD PRIMARY KEY (`dialogue_id`),
-  ADD KEY `choice_id` (`choice_id`),
   ADD KEY `next_dialogue_id` (`next_dialogue_id`);
 
 --
@@ -221,20 +208,6 @@ ALTER TABLE `dialogue`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`event_id`);
-
---
--- Indexes for table `inventory`
---
-ALTER TABLE `inventory`
-  ADD PRIMARY KEY (`inventory_id`),
-  ADD UNIQUE KEY `player_id` (`player_id`);
-
---
--- Indexes for table `inventory_items`
---
-ALTER TABLE `inventory_items`
-  ADD PRIMARY KEY (`inventory_id`,`item_id`),
-  ADD KEY `item_id` (`item_id`);
 
 --
 -- Indexes for table `items`
@@ -311,12 +284,6 @@ ALTER TABLE `events`
   MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `inventory`
---
-ALTER TABLE `inventory`
-  MODIFY `inventory_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
@@ -344,7 +311,7 @@ ALTER TABLE `modifiers`
 -- AUTO_INCREMENT for table `players`
 --
 ALTER TABLE `players`
-  MODIFY `player_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `player_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `puzzles`
@@ -372,27 +339,15 @@ ALTER TABLE `timeloop`
 -- Constraints for table `choices`
 --
 ALTER TABLE `choices`
-  ADD CONSTRAINT `choices_ibfk_1` FOREIGN KEY (`linked_location_id`) REFERENCES `locations` (`location_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `choices_ibfk_1` FOREIGN KEY (`linked_location_id`) REFERENCES `locations` (`location_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_dialogue_id` FOREIGN KEY (`dialogue_id`) REFERENCES `dialogue` (`dialogue_id`),
+  ADD CONSTRAINT `fk_next_dialogue_id` FOREIGN KEY (`next_dialogue_id`) REFERENCES `dialogue` (`dialogue_id`);
 
 --
 -- Constraints for table `dialogue`
 --
 ALTER TABLE `dialogue`
-  ADD CONSTRAINT `dialogue_ibfk_1` FOREIGN KEY (`choice_id`) REFERENCES `choices` (`choice_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `dialogue_ibfk_2` FOREIGN KEY (`next_dialogue_id`) REFERENCES `dialogue` (`dialogue_id`) ON DELETE SET NULL;
-
---
--- Constraints for table `inventory`
---
-ALTER TABLE `inventory`
-  ADD CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `inventory_items`
---
-ALTER TABLE `inventory_items`
-  ADD CONSTRAINT `inventory_items_ibfk_1` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`inventory_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `inventory_items_ibfk_2` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `modifiers`
